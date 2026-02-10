@@ -1,36 +1,43 @@
 package kz.moderntech.controller;
 
-import kz.moderntech.model.User;
+import jakarta.validation.Valid;
+import kz.moderntech.model.dto.UserDto;
+import kz.moderntech.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @PostMapping("/createUser")
-    public void createUser(@RequestBody User user) {
-        users.add(user);
+    private final UserService userService;
+
+    @PostMapping
+    public void createUser(@Valid @RequestBody UserDto userDto) {
+        userService.addUser(userDto);
     }
 
-    @GetMapping("/readUsers")
-    public List<User> getUsers() {
-        return users;
+    @GetMapping
+    public List<UserDto> findUsers() {
+        return userService.getUsers();
     }
 
-    @GetMapping("/readUser/{name}")
-    public User getUser(@PathVariable String name) {
-        for (User user : users) {
-            if (user.getName().equals(name)) {
-                return user;
-            }
-        }
-        return null;
+    @GetMapping("/{id}")
+    public UserDto findUserById(@PathVariable int id) {
+        return userService.getUserById(id);
     }
 
-    // локальный репозиторий
-    private final List<User> users = new ArrayList<>();
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable long id) {
+        userService.deleteUserById(id);
+    }
+
+    @PatchMapping("/{id}")
+    public void updateUser(@PathVariable int id, @Valid @RequestBody UserDto userDto) {
+        userService.updateUser(id, userDto);
+    }
 
 }

@@ -3,25 +3,20 @@ package kz.moderntech.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import kz.moderntech.model.base.BaseEntity;
-import kz.moderntech.model.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
-@Getter
 @Entity
-@Table(name = "users")
-public class User extends BaseEntity {
+@Table(name = "students")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class Student extends BaseEntity {
 
-    private String name;
-    private String email;
-
-    public UserDto toDto() {
-        return new UserDto(super.getId(), name, email);
-    }
+    private String fullName;
+    private int course;
 
 }

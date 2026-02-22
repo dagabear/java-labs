@@ -18,7 +18,7 @@ public abstract class BaseController<T, ID> {
     @PostMapping
     public ResponseEntity create(@RequestBody T entity) {
         repository.save(entity);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<T>(entity, HttpStatus.CREATED);
     }
 
     @GetMapping

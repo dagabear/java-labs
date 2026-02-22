@@ -8,13 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
-@Table(name = "products")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "student_profiles")
 @Getter
 @Setter
-public class Product extends BaseEntity {
-    private String name;
-    private double price;
+@AllArgsConstructor
+@NoArgsConstructor
+public class StudentProfile extends BaseEntity {
+
+    private String address;
+    private String phone;
+    private LocalDate birthDate;
+
 }

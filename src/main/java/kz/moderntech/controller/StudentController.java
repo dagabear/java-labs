@@ -1,31 +1,35 @@
 package kz.moderntech.controller;
 
-import kz.moderntech.controller.base.BaseController;
 import kz.moderntech.model.Student;
-import kz.moderntech.repository.StudentRepository;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import kz.moderntech.service.StudentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/students")
-@Validated
-public class StudentController extends BaseController<Student, Long> {
+@RequiredArgsConstructor
+public class StudentController {
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    public StudentController(StudentRepository repository) {
-        super(repository);
-        this.studentRepository = repository;
+    @PostMapping
+    public void createStudent(@RequestBody Student student) {
+        studentService.createStudent(student);
     }
 
-    @GetMapping("/find-by-course/{course}")
-    public List<Student> findByCourse(@PathVariable Long course) {
-        return studentRepository.findStudentsByCourse(course);
+    @PostMapping("/{studentId}/courses/{courseId}")
+    public void enrollStudentToCourse(@PathVariable long studentId, @PathVariable long courseId) {
+        studentService.enrollStudentToCourse(studentId, courseId);
+    }
+
+    @DeleteMapping("/{studentId}")
+    public void deleteStudent(@PathVariable long studentId) {
+        studentService.delete(studentId);
+    }
+
+    @GetMapping("/{studentId}")
+    public Student getStudent(@PathVariable long studentId) {
+        return studentService.getById(studentId);
     }
 
 }

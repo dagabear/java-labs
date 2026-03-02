@@ -1,38 +1,52 @@
 package kz.moderntech.service;
 
 import kz.moderntech.model.Student;
-import kz.moderntech.repository.CourseRepository;
+import kz.moderntech.model.dto.StudentCreateDto;
+import kz.moderntech.model.dto.StudentResponseDto;
+import kz.moderntech.model.dto.StudentUpdateDto;
 import kz.moderntech.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
 
     private final StudentRepository studentRepository;
-    private final CourseRepository courseRepository;
 
-    public void createStudent(Student student) {
-        studentRepository.save(student);
+    public StudentResponseDto createStudent(StudentCreateDto studentCreateDto) {
+        return studentRepository.save(studentCreateDto.toEntity()).toDto();
     }
 
-    @Transactional
-    public void enrollStudentToCourse(long studentId, long courseId) {
-        var student = studentRepository.findById(studentId).orElseThrow();
-        var course = courseRepository.findById(courseId).orElseThrow();
-
-        student.getCourses().add(course);
-        studentRepository.save(student);
+    public StudentResponseDto updateStudent(StudentUpdateDto studentUpdateDto) {
+        var student = studentRepository.findStudentByEmail(studentUpdateDto.email())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found"));
+        student.setAge(Objects.requireNonNullElse(studentUpdateDto.age(), student.getAge()));
+        student.setFirstName(Objects.requireNonNullElse(studentUpdateDto.firstName(), student.getFirstName()));
+        student.setLastName(Objects.requireNonNullElse(studentUpdateDto.lastName(), student.getLastName()));
+        return student.toDto();
     }
 
-    public void delete(long studentId) {
-        studentRepository.deleteById(studentId);
+    public void deleteStudent(String email) {
+        studentRepository.deleteStudentByEmail(email);
     }
 
-    public Student getById(long studentId) {
-        return studentRepository.findById(studentId).orElseThrow();
+    public StudentResponseDto getStudent(long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "student not found")).toDto();
+    }
+
+    public List<StudentResponseDto> getAllStudents() {
+        return studentRepository.findAll()
+                .stream()
+                .map(Student::toDto)
+                .toList();
     }
 
 }

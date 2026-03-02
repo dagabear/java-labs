@@ -1,43 +1,39 @@
 package kz.moderntech.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import kz.moderntech.model.base.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import kz.moderntech.model.base.CreateEntity;
+import kz.moderntech.model.dto.StudentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name = "student")
+@Table(name = "students")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Student extends BaseEntity {
+public class Student extends CreateEntity {
 
     private String firstName;
     private String lastName;
 
     @Column(unique = true)
     private String email;
+
     private short age;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "student_profile_id")
-    private StudentProfile studentProfile;
-
-    @JsonIgnore
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-        name = "student_courses",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
-    private List<Course> courses = new ArrayList<>();
+    public StudentResponseDto toDto() {
+        return new StudentResponseDto(
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.age,
+                this.getCreatedDate()
+        );
+    }
 
 }

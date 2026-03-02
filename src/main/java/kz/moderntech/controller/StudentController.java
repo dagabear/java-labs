@@ -1,9 +1,13 @@
 package kz.moderntech.controller;
 
-import kz.moderntech.model.Student;
+import kz.moderntech.model.dto.StudentCreateDto;
+import kz.moderntech.model.dto.StudentResponseDto;
+import kz.moderntech.model.dto.StudentUpdateDto;
 import kz.moderntech.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/students")
@@ -13,23 +17,28 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping
-    public void createStudent(@RequestBody Student student) {
-        studentService.createStudent(student);
+    public StudentResponseDto createStudent(@RequestBody StudentCreateDto studentCreateDto) {
+        return studentService.createStudent(studentCreateDto);
     }
 
-    @PostMapping("/{studentId}/courses/{courseId}")
-    public void enrollStudentToCourse(@PathVariable long studentId, @PathVariable long courseId) {
-        studentService.enrollStudentToCourse(studentId, courseId);
+    @PatchMapping
+    public StudentResponseDto updateStudent(@RequestBody StudentUpdateDto studentUpdateDto) {
+        return studentService.updateStudent(studentUpdateDto);
     }
 
-    @DeleteMapping("/{studentId}")
-    public void deleteStudent(@PathVariable long studentId) {
-        studentService.delete(studentId);
+    @DeleteMapping("/{email}")
+    public void deleteStudent(@PathVariable String email) {
+        studentService.deleteStudent(email);
     }
 
-    @GetMapping("/{studentId}")
-    public Student getStudent(@PathVariable long studentId) {
-        return studentService.getById(studentId);
+    @GetMapping("/{id}")
+    public StudentResponseDto getStudent(@PathVariable long id) {
+        return studentService.getStudent(id);
+    }
+
+    @GetMapping
+    public List<StudentResponseDto> getStudents() {
+        return studentService.getAllStudents();
     }
 
 }

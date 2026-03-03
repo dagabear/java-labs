@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import kz.moderntech.model.base.BaseEntity;
+import kz.moderntech.model.dto.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,5 +25,9 @@ public class User extends BaseEntity {
     private String email;
 
     private short age;
+
+    public UserResponseDto toUserResponseDto() {
+        return new UserResponseDto(username, password, email, age);
+    }
 
 }
